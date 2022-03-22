@@ -52,6 +52,7 @@ const App = () => {
     }
   }, [])
 
+
   const handleTitle = (e) => {
     setNewTitle(e.target.value)
   }
@@ -93,7 +94,7 @@ const App = () => {
 
     if(window.confirm(`Are you sure you want to delete the article "${blogToDelete.title}" from the list?`)) {
       blogService
-      .removeBlog(id, blogToDelete)
+      .removeBlog(id)
       .then(() => {
         setNewBlogs(blogs.filter(blog => blog.id !== id))
         setMessage(`The article "${blogToDelete.title}" was succesfully deleted.`)

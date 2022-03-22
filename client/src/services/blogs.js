@@ -27,12 +27,12 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
-const removeBlog = async (id, Obj) => {
+const removeBlog = async id => {
   const config = {
     headers: { Authorization: token },
   }
   
-    const response = await axios.delete(`${baseUrl}/${id}`, Obj, config)
+    const response = await axios.delete(`${baseUrl}/${id}`, config)
     return response.data
   
 }
