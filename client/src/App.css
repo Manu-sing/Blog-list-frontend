@@ -7,16 +7,15 @@
 
 .header-container {
     padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: #8EC5FC;
     background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
     
 }
 
-.form-wrapper {
+.form-wrapper, 
+.loginForm-wrapper {
     padding: 20px 30px;
+    margin: 15px 0;
 }
 
 .body {
@@ -46,3 +45,36 @@ button {
 a { color: rgb(106, 106, 173); }
 a:visited { color: rgb(56, 56, 192); }
 a:hover { color: orange; }
+
+.logged-in {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 20px;
+}
+
+.login-header-btn, .add-blog-btn {
+    border: none;
+    background-color: transparent;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.login-header-btn:hover,
+.add-blog-btn:hover {
+    text-decoration: underline;
+    color:rgb(7, 7, 204)
+}
+
+.box{
+    display:flex;
+    justify-content:center;
+    align-items: center;
+  }
+.header{
+     flex:1;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+  }
+

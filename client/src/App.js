@@ -6,7 +6,10 @@ import Header from './components/Header'
 import RenderAll from './components/RenderAll'
 import Form from './components/Form'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import './App.css'
+import loginService from './services/login'
+import ErrorMessage from './components/ErrorMessage'
 
 
 const App = () => {
@@ -18,6 +21,13 @@ const App = () => {
   const [newStatus, setNewStatus] = useState("")
   const [showAll, setShowAll] = useState(true)
   const [message, setMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
+  const [username, setUsername] = useState('') 
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
+  const [formVisible, setFormVisible] = useState(false)
+  
 
   useEffect(() => {
     console.log('effect')
@@ -32,6 +42,15 @@ const App = () => {
       })
   }, [])
   console.log('render', blogs.length, 'blogs')
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
 
   const handleTitle = (e) => {
     setNewTitle(e.target.value)
@@ -64,7 +83,7 @@ const App = () => {
       setNewBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
       setMessage("The status of the article was succesfully updated.")
       setTimeout(() => {
-        setMessage("")
+        setMessage(null)
       }, 4000);
   })
   }
@@ -79,7 +98,7 @@ const App = () => {
         setNewBlogs(blogs.filter(blog => blog.id !== id))
         setMessage(`The article "${blogToDelete.title}" was succesfully deleted.`)
         setTimeout(() => {
-          setMessage("")
+          setMessage(null)
         }, 4000);
       })
       .catch(error => {
@@ -93,7 +112,6 @@ const App = () => {
     e.preventDefault()
     
     const blogObj = {
-      id: blogs.length + 1,
       title: newTitle,
       author: newAuthor,
       url: newUrl,
@@ -110,7 +128,7 @@ const App = () => {
         setNewBlogs(blogs.concat(returnedBlog))
         setMessage("The article was succesfully added to the list.")
         setTimeout(() => {
-          setMessage("")
+          setMessage(null)
         }, 4000);
       })
       .catch(error => {
@@ -130,29 +148,120 @@ const App = () => {
   }
 
   const blogsToShow = showAll
-    ? blogs
-    : blogs.filter(blog => blog.status === "Non Read")
-  
+  ? blogs
+  : blogs.filter(blog => blog.status === "Non Read")
+
+  const handleUsername = (e) => {
+    setUsername(e.target.value)
+  }
+
+  const handlePassword = (e) => {
+    setPassword(e.target.value)
+  }
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
+
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      setErrorMessage('Wrong username or password. Try again.')
+      setTimeout(() => {
+        setMessage(null)
+      }, 4000)
+    }
+  }
+
+  const handleLogout = async () => {
+    await window.localStorage.clear()
+    setUser(null)
+    setTimeout(() => {
+      alert(`'${user.name}' has successfully logged out.`)
+    }, 100);
+
+  }
+
+ 
+  const showLogin = () => {
+    setLoginVisible(true)
+  }
+
+  const hideLogin = () => {
+    setLoginVisible(false)
+  }
+
+  const loginDisplay = loginVisible === false ? 
+  { display: 'none'} :
+  { display: ''}
+
+
+  const showForm = () => {
+    if(user === null) {
+      alert("You have to login first.")
+    }
+    setFormVisible(true)
+  }
+
+  const hideForm = () => {
+    setFormVisible(false)
+  }
+
+  const formDisplay = formVisible === false ? 
+  { display: 'none'} :
+  { display: ''}
+
+
   return (
     <div>
       <div className='header-container'>
-        <Header text="MY FAVORITE ARTICLES"/>
-      </div>
-      <div className='form-wrapper'>
-        <Form 
-        addBlog={addBlog}
-        title={newTitle}
-        handleTitle={handleTitle}
-        author={newAuthor}
-        handleAuthor={handleAuthor}
-        url={newUrl}
-        handleUrl={handleUrl}
-        likes={newLikes}
-        handleLikes={handleLikes}
-        status={newStatus}
-        handleStatus={handleStatus}
+        <Header 
+        text="MY FAVORITE ARTICLES"
+        user={user}
+        handleLogout={handleLogout}
+        showLogin={showLogin}
+        showForm={showForm}
         />
       </div>
+      {user === null ?
+      <div className='loginForm-wrapper' style={loginDisplay}>
+      <LoginForm 
+      username={username}
+      handleUsername={handleUsername}
+      password={password}
+      handlePassword={handlePassword}
+      handleLogin={handleLogin}
+      hideLogin={hideLogin}
+      />
+      <ErrorMessage className='error-msg' errorMessage={errorMessage} />
+      </div> : 
+        <div className='form-wrapper' style={formDisplay}>
+          <Form 
+          addBlog={addBlog}
+          title={newTitle}
+          handleTitle={handleTitle}
+          author={newAuthor}
+          handleAuthor={handleAuthor}
+          url={newUrl}
+          handleUrl={handleUrl}
+          likes={newLikes}
+          handleLikes={handleLikes}
+          status={newStatus}
+          handleStatus={handleStatus}
+          showForm={showForm}
+          hideForm={hideForm}
+          />
+      </div>
+        }
       <hr/>
       <div className='body'>
         <div className='filter'>

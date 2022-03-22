@@ -1,8 +1,11 @@
 import React from 'react'
 import './form.css'
 
-const Form = ({addBlog, title, handleTitle, author, handleAuthor, url, handleUrl, likes, handleLikes, status, handleStatus}) => {
+
+const Form = ({addBlog, title, handleTitle, author, handleAuthor, url, handleUrl, likes, handleLikes, status, handleStatus, formVisible, hideForm, showForm}) => {
   return (
+    <> {formVisible === false ?
+    null :
     <div className='form-container'>
         <div className='form-title'>
           <h2>Here you can add a new article to the list:</h2>
@@ -29,8 +32,12 @@ const Form = ({addBlog, title, handleTitle, author, handleAuthor, url, handleUrl
               </select> <button className="submit-btn" type="submit">Save</button>
             </div>
           </form> 
-        </div>  
-    </div>
+        </div> 
+        <button onClick={hideForm}>close</button> 
+      </div>  
+    }
+      
+    </>
   )
 }
 
