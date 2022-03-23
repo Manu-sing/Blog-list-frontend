@@ -2,10 +2,11 @@ import React from 'react'
 import RenderSingle from './RenderSingle'
 import './grid.css'
 
-const RenderAll = ({blogs, toggleStatus, handleDelete}) => {
+const RenderAll = ({blogs, toggleStatus, handleDelete, addALike}) => {
+  let mostLikesToLeastLikes = blogs.sort((a, b) => b.likes - a.likes);
   return (
     <div className='grid'>
-        {blogs.map(blog => 
+        {mostLikesToLeastLikes.map(blog => 
           <RenderSingle 
           key={blog.id}
           title={blog.title}
@@ -15,6 +16,7 @@ const RenderAll = ({blogs, toggleStatus, handleDelete}) => {
           status={blog.status}
           toggleStatus={() => toggleStatus(blog.id)}
           handleDelete={() => handleDelete(blog.id)}
+          addALike={() => addALike(blog.id)}
           />  
             )}
     </div>
