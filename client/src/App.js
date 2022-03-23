@@ -89,6 +89,18 @@ const App = () => {
   })
   }
 
+  const addALike = (id) => {
+    console.log(`We need to add a like to the blog with id ${id}`)
+    const blogToAddaLikeTo = blogs.find(n => n.id === id)
+    const editedBlog = {...blogToAddaLikeTo, likes: blogToAddaLikeTo.likes + 1}
+
+    blogService
+    .update(id, editedBlog)
+    .then(returnedBlog => {
+      setNewBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    })
+  }
+
   const handleDelete = (id) => {
     const blogToDelete = blogs.find(n => n.id === id)
 
@@ -278,6 +290,7 @@ const App = () => {
         blogs={blogsToShow}
         toggleStatus={toggleStatus}
         handleDelete={handleDelete}
+        addALike={addALike}
         />
       </div>
     </div>

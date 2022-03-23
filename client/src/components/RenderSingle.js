@@ -1,7 +1,8 @@
 import React from 'react'
 import './grid.css'
 
-const RenderSingle = ({title, author, url, likes, status, toggleStatus, handleDelete}) => {
+
+const RenderSingle = ({title, author, url, likes, status, toggleStatus, handleDelete, addALike}) => {
     const label = status === "Read" ? "Mark 'Non Read'" : "Mark 'Read'"
   return (
     <div className='grid-item'>
@@ -10,7 +11,7 @@ const RenderSingle = ({title, author, url, likes, status, toggleStatus, handleDe
           <hr/>
           <p className='article-info'><strong>Author:</strong> {author}</p>
           <p className='article-info'><strong>Link:</strong> <a href={url}>{url}</a></p>
-          <p className='article-info'><strong>Likes:</strong> {likes}</p>
+          <p className='article-info'><strong>Likes:</strong> {likes} <button className="status-btn" onClick={addALike}>Like</button></p> 
           <p className='article-info'><strong>Status:</strong> {status} <button className="status-btn" onClick={toggleStatus}>{label}</button></p>
         </div>
         <button className="delete-btn" onClick={handleDelete}>Delete</button>
